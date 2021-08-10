@@ -1,5 +1,9 @@
 <?php
 require_once 'config.php';
+/**
+ *
+ * @var SQLite3 $conn
+ */
 
 if (isset($_POST['login'])) {
     $username = sanitise_data($_POST['username']);
