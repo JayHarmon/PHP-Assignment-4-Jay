@@ -53,7 +53,17 @@ if (isset($_POST['code']) && $_POST['code'] != "") {
 <div class="message_box" style="margin:10px 0px;">
     <?php echo $status; ?>
 </div>
-
+<?php
+if (!empty($_SESSION["shopping_cart"])) {
+    $cart_count = count(array_keys($_SESSION["shopping_cart"]));
+    ?>
+    <div class="cart_div">
+        <a href="cart.php"><img src="images/cart-icon.png"/> Cart<span>
+<?php echo $cart_count; ?></span></a>
+    </div>
+    <?php
+}
+?>
 <?php
 $result = $conn ->query("SELECT * FROM products");
 while ($row = $result->fetchArray()) {
