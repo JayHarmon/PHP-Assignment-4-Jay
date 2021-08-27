@@ -39,6 +39,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="orderForm.php">Order Form</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link"href="invoice.php">Invoices</a>
+                    </li>
                 </ul>
             </div>
         </div>
