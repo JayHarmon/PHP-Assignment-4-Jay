@@ -11,6 +11,9 @@
 <h1 class="text-primary">Order Form</h1>
 <?php $status = ""; ?>
 <?php
+if(!isset($_SESSION['username'])){
+    header("Location:index.php");
+}
 $status = "";
 if (isset($_POST['code']) && $_POST['code'] != "") {
     $code = $_POST['code'];
@@ -77,5 +80,4 @@ while ($row = $result->fetchArray()) {
     </form>
     </div>";
 }
-
 ?>
