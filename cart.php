@@ -134,5 +134,7 @@ $conn->exec("INSERT INTO orderDetails (orderCode,customerID, productCode, orderD
 
         }
     $_SESSION["shopping_cart"] = [];
+$orderMessage = "Order #:".$orderNumber." has been submitted";
+        $conn->exec("INSERT INTO messaging (sender, recipient, message, dateSubmitted) VALUES ('$customerID',1, '$orderMessage', '$orderDate')");
 }
 ?>
