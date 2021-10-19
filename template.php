@@ -47,6 +47,13 @@
                             <a class="nav-link" href="invoice.php">Invoices</a>
                         </li>
                     <?php } ?>
+                    <?php if (isset($_SESSION["level"])) : ?>
+                        <?php if ($_SESSION["level"] == "Administrator") : ?>
+                            <li class="nav-item">
+                                <a class="nav-link" href="search-user.php">Search Users</a>
+                            </li>
+                        <?php endif; ?>
+                    <?php endif; ?>
                 </ul>
                 <?php if (isset($_SESSION["name"])) {
                     echo "<div class='alert alert-success d-flex'><span>Welcome, " . $_SESSION["name"] . "<br><a href='logout.php'>Logout</a></span></div>";
