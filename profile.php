@@ -73,8 +73,8 @@ $messages = $conn->query("SELECT * FROM messaging WHERE recipient='$userId'");
         $dateSubmitted = $individual_message[4];
         $senderName = $conn->querySingle("SELECT username FROM user WHERE user_id='$sender'");
         ?>
-        <divclass="row">
-        <divclass="col-md-4">
+        <div class="row">
+        <div class="col-md-4">
         <?php
         if (!$senderName) {
             echo $sender;
@@ -83,11 +83,11 @@ $messages = $conn->query("SELECT * FROM messaging WHERE recipient='$userId'");
         }
         ?>
 
-        <?php echo$sender;?></div>
+       </div>
 
 
-        <divclass="col-md-4"><?php echo$message;?></div>
-        <divclass="col-md-4"><?php echo$dateSubmitted;?></div>
+        <div class="col-md-4"><?php echo$message;?></div>
+        <div class="col-md-4"><?php echo$dateSubmitted;?></div>
         </div>
 
         <?php

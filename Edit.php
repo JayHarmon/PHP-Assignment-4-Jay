@@ -11,20 +11,22 @@
     <h1 class='text-primary'>Edit Your Profile</h1>
 
 <?php
-if (isset($_SESSION["username"])) {
-    $userName = $_SESSION["username"];
-    $userId = $_SESSION["user_id"];
 
-    $query = $conn->query("SELECT * FROM user WHERE username='$userName'");
-    $userData = $query->fetchArray();
-    $userName = $userData[1];
-    $password = $userData[2];
-    $name = $userData[3];
-    $profilePic = $userData[4];
-    $accessLevel = $userData[5];
+if (isset($_GET["user_id"])) {
+    $userToLoad = $_GET["user_id"];
 } else {
-    header("Location:index.php");
+    header("location:index.php");
 }
+
+$query = $conn->query("SELECT * FROM user WHERE user_id='$userToLoad'");
+$userData = $query->fetchArray();
+$user_id = $userData[0];
+$userName = $userData[1];
+$password = $userData[2];
+$name = $userData[3];
+$profilePic = $userData[4];
+$accessLevel = $userData[5];
+
 ?>
 
     <div class="container-fluid">
@@ -37,7 +39,7 @@ if (isset($_SESSION["username"])) {
                 <?php echo "<img src='images/profilePic/" . $profilePic . "' width='100' height='100'>" ?>
             </div>
             <div class="col-md-6">
-                <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post"
+                <form action="edit.php?user_id=<?php echo $user_id ?>" method="post"
                       enctype="multipart/form-data">
                     <p>Name: <input type="text" name="name" value="<?php echo $name ?>"></p>
                     <p>Access Level: <input type="text" name="accessLevel" value="<?php echo $accessLevel ?>"></p>
@@ -62,48 +64,51 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $sqlStmt->bindValue(":newAccessLevel", $accessLevel);
     }
     $sqlStmt->execute();
-}
-// Update Profile picture
-$file = $_FILES['file'];
+
+    // Update Profile picture
+    $file = $_FILES['file'];
 
 //Variable Names
-$fileName = $_FILES['file']['name'];
-$fileTmpName = $_FILES['file']['tmp_name'];
-$fileSize = $_FILES['file']['size'];
-$fileError = $_FILES['file']['error'];
-$fileType = $_FILES['file']['type'];
+    $fileName = $_FILES['file']['name'];
+    $fileTmpName = $_FILES['file']['tmp_name'];
+    $fileSize = $_FILES['file']['size'];
+    $fileError = $_FILES['file']['error'];
+    $fileType = $_FILES['file']['type'];
 
 //defining what type of file is allowed
 // We seperate the file, and obtain the end.
-$fileExt = explode('.', $fileName);
-$fileActualExt = strtolower(end($fileExt));
+    $fileExt = explode('.', $fileName);
+    $fileActualExt = strtolower(end($fileExt));
 //We ensure the end is allowable in our thing.
-$allowed = array('jpg', 'jpeg', 'png', 'pdf');
+    $allowed = array('jpg', 'jpeg', 'png', 'pdf');
 
-if (in_array($fileActualExt, $allowed)) {
-    if ($fileError === 0) {
-        //File is smaller than yadda.
-        if ($fileSize < 10000000000) {
-            //file name is now a unique ID based on time with IMG- precedding it, followed by the file type.
-            $fileNameNew = uniqid('IMG-', True) . "." . $fileActualExt;
-            //upload location
-            $fileDestination = 'images/profilePic/' . $fileNameNew;
-            //command to upload.
-            move_uploaded_file($fileTmpName, $fileDestination);
+    if (in_array($fileActualExt, $allowed)) {
+        if ($fileError === 0) {
+            //File is smaller than yadda.
+            if ($fileSize < 10000000000) {
+                //file name is now a unique ID based on time with IMG- precedding it, followed by the file type.
+                $fileNameNew = uniqid('IMG-', True) . "." . $fileActualExt;
+                //upload location
+                $fileDestination = 'images/profilePic/' . $fileNameNew;
+                //command to upload.
+                move_uploaded_file($fileTmpName, $fileDestination);
 
 
-            $sql = "UPDATE user SET profilePic=:newFileName WHERE username='$userName'";
-            $stmt = $conn->prepare($sql);
-            $stmt->bindValue(':newFileName', $fileNameNew);
-            $stmt->execute();
-            header("location:index.php");
+                $sql = "UPDATE user SET profilePic=:newFileName WHERE username='$userName'";
+                $stmt = $conn->prepare($sql);
+                $stmt->bindValue(':newFileName', $fileNameNew);
+                $stmt->execute();
+                header("location:index.php");
+            } else {
+                echo "Your image is too big!";
+            }
         } else {
-            echo "Your image is too big!";
+            echo "there was an error uploading your image!";
         }
     } else {
-        echo "there was an error uploading your image!";
+        echo "You cannot upload files of this type!";
     }
-} else {
-    echo "You cannot upload files of this type!";
 }
+
+
 ?>
