@@ -24,7 +24,7 @@ $query = $conn->query("SELECT DISTINCT category FROM products");
                     </select>
                 </p>
 
-                <p>Quantity<input type="number" name="username" class="form-control" required="required"></p></p>
+                <p>Quantity<input type="number" name="prodQuantity" class="form-control" required="required"></p>
             </div>
             <div class="col-md-6">
                 <h2>More Details</h2>
@@ -48,7 +48,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $prodCode = sanitise_data($_POST['prodCode']);
 
 //check if product exists.
-    $query = $conn->query("SELECT COUNT(*) FROM products WHERE username='$prodCode'");
+    $query = $conn->query("SELECT COUNT(*) FROM products WHERE code='$prodCode'");
     $data = $query->fetchArray();
     $numberOfProducts = (int)$data[0];
 
@@ -62,11 +62,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $file = $_FILES['file'];
 
 //Variable Names
-        $fileName = $_FILES['file']['name'];
-        $fileTmpName = $_FILES['file']['tmp_name'];
-        $fileSize = $_FILES['file']['size'];
-        $fileError = $_FILES['file']['error'];
-        $fileType = $_FILES['file']['type'];
+        $fileName = $_FILES['prodImage']['name'];
+        $fileTmpName = $_FILES['prodImage']['tmp_name'];
+        $fileSize = $_FILES['prodImage']['size'];
+        $fileError = $_FILES['prodImage']['error'];
+        $fileType = $_FILES['prodImage']['type'];
 
 //defining what type of file is allowed
 // We seperate the file, and obtain the end.
@@ -82,16 +82,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     //file name is now a unique ID based on time with IMG- precedding it, followed by the file type.
                     $fileNameNew = uniqid('IMG-', True) . "." . $fileActualExt;
                     //upload location
-                    $fileDestination = 'images/profilePic/' . $fileNameNew;
+                    $fileDestination = 'images/productImages/' . $fileNameNew;
                     //command to upload.
                     move_uploaded_file($fileTmpName, $fileDestination);
-                    $sql = "INSERT INTO user (username, password, name, profilePic, accessLevel) VALUES (:newUsername, :newPassword, :newName, :newImage, :newAccessLevel)";
+                    $sql = "INSERT INTO products (productName, category, quantity, price, image, code) VALUES (:newProdName, :newProdCategory, :newProdQuantity, :newProdPrice, :newProdImage, newProdCode)";
                     $stmt = $conn->prepare($sql);
-                    $stmt->bindValue(':newUsername', $username);
-                    $stmt->bindValue(':newPassword', $hashed_password);
-                    $stmt->bindValue(':newName', $name);
-                    $stmt->bindValue(':newImage', $fileNameNew);
-                    $stmt->bindValue(':newAccessLevel', $accessLevel);
+                    $stmt->bindValue(':newProdName', $prodName);
+                    $stmt->bindValue(':newProdCategory', $prodCategory);
+                    $stmt->bindValue(':newProdQuantity', $prodQuantity);
+                    $stmt->bindValue(':newProdPrice', $prodPrice);
+                    $stmt->bindValue(':newProdImage', $fileNameNew);
+                    $stmt->bindValue(':newProdCode', $prodCode);
                     $stmt->execute();
                     header("location:index.php");
                 } else {
